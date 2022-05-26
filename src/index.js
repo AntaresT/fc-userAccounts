@@ -3,16 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BankProvider } from './Providers/banks';
-import { UserProvider } from './Providers/users'
+import { UserProvider } from './Providers/users';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
-      <BankProvider>
-        <App />
-      </BankProvider>
+      <App />
     </UserProvider>
   </React.StrictMode>
 );

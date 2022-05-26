@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# Bank and User CRUD with REST api
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+### Enviroment Variables
+
+Please use the file EXAMPLE.env to set the url api.
+
+### Frameworks and Libs used
+
+- [Styled-components](https://github.com/styled-components)
+- [Formik](https://github.com/jaredpalmer/formik)
+- [MUI](https://github.com/mui/material-ui)
 
 ## Available Scripts
 
@@ -28,15 +38,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-
-### `Enviroment Variables`
-
-Please use the file EXEMPLE.env to set the url api.
-
-### Frameworks and Libs used
-
-- [Styled-components](https://github.com/styled-components)
-- [Formik](https://github.com/jaredpalmer/formik)
-- [MUI](https://github.com/mui/material-ui)
-
