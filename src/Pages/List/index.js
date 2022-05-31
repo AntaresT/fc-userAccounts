@@ -100,7 +100,7 @@ function List() {
     <div>
       <h2>Accounts</h2>
       <BtnContainer>
-        {/* <Button onClick={handleNewUser}>New User</Button> */}
+
         <Button variant="outlined" onClick={handleNewUser}>New User</Button>
       </BtnContainer>
       <TableContainer>
