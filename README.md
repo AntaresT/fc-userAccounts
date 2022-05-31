@@ -1,4 +1,4 @@
-# Bank and User CRUD with REST api
+# User Accounts CRUD with REST api
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
