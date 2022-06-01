@@ -36,7 +36,8 @@ export const ArraySlot = styled.div`
 
   @media (min-width: 320px) and (max-width: 720px){
     height: auto;
-    overflow-y: inherit;
+    margin-top: 20px;
+    overflow-y: scroll;
   }
 `
 

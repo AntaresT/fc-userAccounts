@@ -11,8 +11,17 @@ const AppRoutes = () =>{
   return (
     <Router>
       <Routes>
-        <Route exact path="/user" element={ <User /> }/>
         <Route exact path="/" element={ <List /> }/>
+        <Route exact path="/user" element={ <User /> }/>
+        <Route exact path="/user/:id" element={ <User /> }/>
+        <Route
+          path="*"
+          element={
+            <main style={{ marginTop: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
       </Routes>
     </Router>
   )

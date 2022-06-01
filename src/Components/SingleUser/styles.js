@@ -13,8 +13,17 @@ export const Button = styled.button`
   background-color: unset;
   cursor: pointer;
   text-decoration: none;
+  transition: all .2s ease-in-out;
+  height: 35px;
+  width: 35px;
+
+
+  &:hover {
+    transform: scale(1.2);
+  }
 `
 
 export const Span = styled.span`
   align-self: center;
+  width: 100%;
 `

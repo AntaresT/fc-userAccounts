@@ -4,12 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './Providers/users';
+import { BankProvider } from './Providers/banks'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <UserProvider>
-      <App />
+      <BankProvider>
+        <App />
+      </BankProvider>
     </UserProvider>
   </React.StrictMode>
 );

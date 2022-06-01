@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useFormik, FieldArray, FormikProvider } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { BankContext } from '../../Providers/banks'
+import api from '../../Services/api'
 
 import { Container, FieldSlot, Actions, Form, FormContainer,
   Button, NestedContainer, UserContainer, NestedFields,
@@ -20,29 +23,29 @@ function User () {
   const [ cpf, setCpf ] = useState('');
   const [ email, setEmail ] = useState('');
   const [ bankAccountsValues, setBankAccounts ] = useState([]);
+  const [ loadedValues, setLoadedValues ] = useState(null);
+  const [ bankList, setBankList ] = useState();
 
   const navigate = useNavigate();
 
-  const formik = useFormik({
-    initialValues: {
-      name: name,
-      cpf: cpf,
-      email: email,
-      bankAccounts: []
-    },
-    onSubmit: values => {
-      console.log(values)
-      setName(values.name)
-      setCpf(values.cpf)
-      setEmail(values.email)
-      setBankAccounts(values.bankAccounts)
-      
-      return new Promise(res=> setTimeout(res, 1000))
+  const contextBank = React.useContext(BankContext);
+
+  const { id } = useParams();
+  
+  useEffect(() => {
+    if(id && loadedValues === null){
+      setContextUser(id)
     }
+    if(loadedValues !== [] && loadedValues !== null){
+      console.log(loadedValues, 'loaded')
+      console.log(id,'id')
+      setFormValues()
+    }
+    setContextBank()
   });
 
   const bankAccountForm = {
-    bank: [],
+    bank:  '',
     agency: '',
     agencyDigit: '',
     accountNumber: '',
@@ -51,8 +54,81 @@ function User () {
     accountDigit: ''
   }
 
+  const initialValues = { 
+    name: name,
+    cpf: cpf,
+    email: email,
+    bankAccounts: bankAccountsValues
+   }
+
+  const formik = useFormik({
+    initialValues: loadedValues? loadedValues : initialValues,
+    onSubmit: values => {
+      console.log(values)
+      setName(values.name)
+      setCpf(values.cpf)
+      setEmail(values.email)
+      setBankAccounts(values.bankAccounts)
+      
+      if(!id){
+        postNewUser(values)
+      }
+
+      if(id){
+        console.log('edit')
+      }
+      
+      return new Promise(res => setTimeout(res, 1000))
+    }
+
+  });
+
+  async function setContextBank() { 
+    await setBankList(contextBank)
+  }
+
+  async function setContextUser(id) { 
+    if(id){
+      try{
+        const res = await api.getUserId(id)
+        setLoadedValues(res.data)
+        console.log(loadedValues, 'loadedValues')
+      } catch(err) {
+        console.log(err)
+      }
+    }
+  }
+  
+  function postNewUser(item) {
+    api.postUser(item)
+    .then((res) => {
+      console.log(res ,'post new user')
+    },
+    (err) => {
+      console.log(err)
+    })
+  }
+
+  function updateUser(item) {
+    api.putUser(item)
+    .then((res) => {
+      console.log(res ,'res updte')
+    },
+    (err) => {
+      console.log(err)
+    })
+  }
+
+  function setFormValues() {
+    setName(loadedValues.name)
+    setCpf(loadedValues.cpf)
+    setEmail(loadedValues.email)
+    setBankAccounts(loadedValues.bankAccounts)
+  }
+
   function handleReturn() {
     navigate('/')
+    window.location.reload(true);
   }
 
   return (
@@ -127,9 +203,11 @@ function User () {
                             label="Bank"
                             onChange={formik.handleChange}
                           >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            {bankList.map((bank, index) => (
+                              <MenuItem key={index} value={bank}>
+                                <span>{bank.name}</span>
+                              </MenuItem>
+                            ))}
                           </TextField>
                         </FieldSlot>
                         <FieldSlot >

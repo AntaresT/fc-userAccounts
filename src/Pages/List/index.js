@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import { UserContext } from '../../Providers/users'
-import UserList from '../../Components/UserList';
+import SingleUser from '../../Components/SingleUser';
 
 import { Table, TableContainer, BtnContainer, Button } from './styles'
 
@@ -17,6 +17,85 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { useTheme } from '@mui/material/styles';
+import CircularProgress from '@mui/material/CircularProgress';
+
+function List() {
+  const [ users, setUsers ] = useState([]);
+  const [ page, setPage ] = useState(0);
+  const [ loading, setLoading ] = useState(false)
+
+  const navigate = useNavigate();
+
+  const contextUser = React.useContext(UserContext);
+  
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  useEffect(() => { 
+    setContextUser()
+    if(!loading){
+      isLoading()
+    }
+  });
+
+  async function setContextUser() { 
+    await setUsers(contextUser)
+  }
+
+  function isLoading () {
+    if (users[0]){
+      return setLoading(!loading)
+    }
+  }
+
+  function handleNewUser() {
+    navigate('/user')
+  }
+
+  return(
+    <div>
+      <h2>Accounts</h2>
+      <BtnContainer>
+        <Button variant="outlined" onClick={handleNewUser}>New User</Button>
+      </BtnContainer>
+      {
+        loading? 
+          <TableContainer>
+            <Table>
+              <TableBody>           
+                { 
+                (
+                  users?
+                    users.slice(page * 5, page * 5 + 5)
+                    : users
+                  ).map((item, index) => (
+                    <SingleUser key={index} singleUser={item} />
+                  )
+                )
+                }
+              </TableBody>
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    rowsPerPageOptions={[5]}
+                    colSpan={3}
+                    count={users.length}
+                    rowsPerPage={5}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
+          :
+          <CircularProgress/>
+      }
+    </div>
+  )
+}
 
 function TablePaginationActions(props) {
   const theme = useTheme();
@@ -70,71 +149,6 @@ function TablePaginationActions(props) {
       </IconButton>
     </Box>
   );
-}
-
-function List() {
-  const [ users, setUsers ] = useState([]);
-  const [ page, setPage ] = useState(0);
-
-  const navigate = useNavigate();
-
-  const contextUser = React.useContext(UserContext);
-  
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  useEffect(() => { 
-    setContextUser()
-  });
-
-  async function setContextUser() { 
-    await setUsers(contextUser)
-  }
-
-  function handleNewUser() {
-    navigate('/user')
-  }
-
-  return(
-    <div>
-      <h2>Accounts</h2>
-      <BtnContainer>
-
-        <Button variant="outlined" onClick={handleNewUser}>New User</Button>
-      </BtnContainer>
-      <TableContainer>
-        <Table>
-          <TableBody>           
-            {
-            (
-              users?
-                users.slice(page * 5, page * 5 + 5)
-                : users
-              ).map((item, index) => (
-                <UserList key={index} singleUser={item} />
-              )
-            )
-            }
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5]}
-                colSpan={3}
-                count={users.length}
-                rowsPerPage={5}
-                page={page}
-                onPageChange={handleChangePage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-
-        </Table>
-      </TableContainer>
-    </div>
-  )
 }
 
 export default List;
