@@ -11,6 +11,7 @@ Please use the file EXAMPLE.env to set the url api.
 - [Styled-components](https://github.com/styled-components)
 - [Formik](https://github.com/jaredpalmer/formik)
 - [MUI](https://github.com/mui/material-ui)
+- [Yup](https://github.com/jquense/yup)
 
 ## Available Scripts
 
