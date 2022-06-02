@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useFormik, FieldArray, FormikProvider } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { BankContext } from '../../Providers/banks'
 import api from '../../Services/api'
+import { BankContext } from '../../Providers/banks'
+import SnackbarSucces from '../../Components/SnackBar';
 
 import { Container, FieldSlot, Actions, Form, FormContainer,
   Button, NestedContainer, UserContainer, NestedFields,
@@ -16,6 +17,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
+import * as Yup from 'yup';
 
 function User () {
   
@@ -25,26 +27,43 @@ function User () {
   const [ bankAccountsValues, setBankAccounts ] = useState([]);
   const [ loadedValues, setLoadedValues ] = useState(null);
   const [ bankList, setBankList ] = useState();
+  const [ isEdit, setIsEdit ] = useState(false);
+  const [ open, setOpen ] = useState(false);
+  const [ message, setMessage ] = useState('')
+
 
   const navigate = useNavigate();
 
   const contextBank = React.useContext(BankContext);
 
   const { id } = useParams();
+
+  const validationSchema = Yup.object({
+    name: Yup
+      .string("Enter your name")
+      .required("Name is required"),
+    cpf: Yup
+      .string("Enter your CPF")
+      .max(11, "CPF should be of minimum 11 characters length")
+      .required("CPF is required"),
+    email: Yup
+      .string("Enter your email")
+      .email("Enter a valid email")
+      .required("Email is required")
+  });
   
   useEffect(() => {
     if(id && loadedValues === null){
-      setContextUser(id)
+      setUserEdit(id)
     }
     if(loadedValues !== [] && loadedValues !== null){
-      console.log(loadedValues, 'loaded')
-      console.log(id,'id')
       setFormValues()
     }
     setContextBank()
   });
 
   const bankAccountForm = {
+    user: '',
     bank:  '',
     agency: '',
     agencyDigit: '',
@@ -54,7 +73,7 @@ function User () {
     accountDigit: ''
   }
 
-  const initialValues = { 
+  const initialValues = {
     name: name,
     cpf: cpf,
     email: email,
@@ -62,20 +81,18 @@ function User () {
    }
 
   const formik = useFormik({
-    initialValues: loadedValues? loadedValues : initialValues,
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    enableReinitialize: true,
     onSubmit: values => {
-      console.log(values)
-      setName(values.name)
-      setCpf(values.cpf)
-      setEmail(values.email)
-      setBankAccounts(values.bankAccounts)
-      
+            
       if(!id){
         postNewUser(values)
       }
 
-      if(id){
-        console.log('edit')
+      if(id && isEdit){
+        values.id = loadedValues.id
+        updateUser(values)
       }
       
       return new Promise(res => setTimeout(res, 1000))
@@ -87,12 +104,12 @@ function User () {
     await setBankList(contextBank)
   }
 
-  async function setContextUser(id) { 
+  async function setUserEdit(id) { 
     if(id){
+      setIsEdit(true)
       try{
         const res = await api.getUserId(id)
         setLoadedValues(res.data)
-        console.log(loadedValues, 'loadedValues')
       } catch(err) {
         console.log(err)
       }
@@ -100,9 +117,18 @@ function User () {
   }
   
   function postNewUser(item) {
+    // api.postBankAccount(item.bankAccounts)
+    // .then((res) => {
+    //   console.log(res ,'post new bank')
+    // },
+    // (err) => {
+    //   console.log(err)
+    // })
+
     api.postUser(item)
     .then((res) => {
-      console.log(res ,'post new user')
+      setOpen(true)
+      setMessage('New user created')
     },
     (err) => {
       console.log(err)
@@ -112,7 +138,8 @@ function User () {
   function updateUser(item) {
     api.putUser(item)
     .then((res) => {
-      console.log(res ,'res updte')
+      setOpen(true)
+      setMessage('User updated')
     },
     (err) => {
       console.log(err)
@@ -123,12 +150,25 @@ function User () {
     setName(loadedValues.name)
     setCpf(loadedValues.cpf)
     setEmail(loadedValues.email)
-    setBankAccounts(loadedValues.bankAccounts)
+    
+    // api.getUserBanks(loadedValues.id)
+    // .then((res) => {
+    //   const userBanks = res.data['hydra:member']
+    //   console.log(userBanks ,'response user banks')
+    // },
+    // (err) => {
+    //   console.log(err)
+    // })
+  
   }
 
   function handleReturn() {
     navigate('/')
     window.location.reload(true);
+  }
+
+  function handleClose () {
+    setOpen(false)
   }
 
   return (
@@ -137,9 +177,7 @@ function User () {
         <ButtonReturn variant="outlined" type="button" onClick={handleReturn}>
           <ArrowBackIcon />
         </ButtonReturn>
-        <h2>
-          New User
-        </h2>
+        <h2> {isEdit? 'Edit User' : 'New User' }</h2>
       </FormHeader>
 
       <FormikProvider value={formik}>
@@ -315,6 +353,11 @@ function User () {
 
         </Form>
       </FormikProvider>
+      <SnackbarSucces 
+        open={open}
+        onClose={handleClose}
+        message={message}
+      />
     </Container>
   )
 }

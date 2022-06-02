@@ -14,7 +14,7 @@ const api = {
   getUserId: (data) => bankApi.get(`/users/${data}`),
   getUserBanks: (data) => bankApi.get(`/users/${data}/bank_accounts`), 
   postUser: (data) => bankApi.post('/users', data),
-  putUser: (data) => bankApi.put(`/users/${data}`),
+  putUser: (data) => bankApi.put(`/users/${data.id}`, data),
   deleteUser: (data) => bankApi.delete(`/users/${data}`),
 
   //BankAccount

@@ -11,7 +11,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 function UserList (item) {
   const [ userList, setUserList ] = useState({});
   const [ open, setOpen ] = useState(false);
-  const [ userId, setUserId ] = useState();
 
   const navigate = useNavigate();
   
@@ -23,9 +22,8 @@ function UserList (item) {
     navigate(`/user/${userList.id}`)
   }
 
-  function handleClickDelete (id) {
+  function handleClickDelete () {
     console.log('delete')
-    setUserId(userList.id)
     setOpen(true)
   }
 
@@ -48,7 +46,7 @@ function UserList (item) {
     <DeleteDialog
       open={open}
       onClose={handleClose}
-      userId={userId}
+      user={userList}
     />
     </>
   )

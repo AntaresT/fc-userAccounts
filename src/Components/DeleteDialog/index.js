@@ -17,12 +17,12 @@ function DeleteDialog(props) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const { onClose, open, userId } = props;
+  const { onClose, open, user } = props;
 
   const navigate = useNavigate();
 
   function handleClickDelete () {
-    api.deleteUser(userId)
+    api.deleteUser(user.id)
     .then((res) => {
       navigate('/')
       window.location.reload(true);
@@ -41,11 +41,11 @@ function DeleteDialog(props) {
       aria-labelledby="responsive-dialog-title"
     >
       <DialogTitle id="responsive-dialog-title">
-        {"Do you agree to Delete this user?"}
+        {`Do you agree to Delete ${user.name}?`}
       </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          The user ID is {userId}
+          The user ID is {user.id}
         </DialogContentText>
       </DialogContent>
       <DialogActions>

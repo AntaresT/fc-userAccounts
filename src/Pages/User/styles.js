@@ -20,6 +20,7 @@ export const Form = styled.form`
 export const FieldSlot = styled.div`
   text-align: left;
   margin-right: 10px;
+  margin-top: 10px;
   padding-top: 10px;
   width: ${props => props.customWidth ? props.customWidth : '400px'};
 
@@ -137,7 +138,7 @@ export const ButtonBankAccount = styled.button`
   border-radius: 4px;
   color: 74b9ff;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
   text-decoration: none;
   font-size: 16px;
   transition: all .2s ease-in-out;
