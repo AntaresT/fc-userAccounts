@@ -20,6 +20,7 @@ export const Form = styled.form`
 export const FieldSlot = styled.div`
   text-align: left;
   margin-right: 10px;
+  margin-top: 10px;
   padding-top: 10px;
   width: ${props => props.customWidth ? props.customWidth : '400px'};
 
@@ -36,7 +37,8 @@ export const ArraySlot = styled.div`
 
   @media (min-width: 320px) and (max-width: 720px){
     height: auto;
-    overflow-y: inherit;
+    margin-top: 20px;
+    overflow-y: scroll;
   }
 `
 
@@ -136,7 +138,7 @@ export const ButtonBankAccount = styled.button`
   border-radius: 4px;
   color: 74b9ff;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
   text-decoration: none;
   font-size: 16px;
   transition: all .2s ease-in-out;
